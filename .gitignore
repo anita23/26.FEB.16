@@ -1,0 +1,51 @@
+######################RECODIFICAR############################333
+#0.3  Limpiar el entorno de trabajo
+rm(list = ls())
+
+library(foreign)
+require (foreign)
+#Cargar las Bases de datos
+baseinegi<-data.frame(read.dbf("C:\\Users\\SALA-C25\\Downloads\\SDEMT215.dbf"))
+
+###Metodo 1###
+baseinegi$CLASE2.1[as.numeric(baseinegi$CLASE2)>=0 & as.numeric(baseinegi$CLASE2)<= 2]<-1
+baseinegi$CLASE2.1[as.numeric(baseinegi$CLASE2.1) >= 3 & as.numeric(baseinegi$CLASE2.1)<=4] <- 2
+
+###método 2###
+attach(baseinegi)
+baseinegi$CLASE2.2 <- ifelse(as.numeric(CLASE2) >= 1 & as.numeric(CLASE2)<=2,1, ifelse(as.numeric(CLASE2) >= 3 & as.numeric(CLASE2)<=3,2, 3))
+detach(baseinegi)
+
+###4.1.1 comparación de los métodos###
+install.packages("questionr")
+require(questionr)
+wtd.table(baseinegi$CLASE2.1)
+wtd.table(baseinegi$CLASE2.2)
+
+
+
+
+
+###ejercicio  
+attach(baseinegi)
+baseinegi$EDA.1[as.numeric(baseinegi$EDA)>=1 & as.numeric(baseinegi$EDA)<= 15]<-1
+baseinegi$EDA.1[as.numeric(baseinegi$EDA)>=16 & as.numeric(baseinegi$EDA)<= 30]<-2
+baseinegi$EDA.1[as.numeric(baseinegi$EDA)>=31 & as.numeric(baseinegi$EDA)<= 60]<-3
+baseinegi$EDA.1[as.numeric(baseinegi$EDA)>=61 & as.numeric(baseinegi$EDA)<= 98]<-4
+baseinegi$EDA.1[as.numeric(baseinegi$EDA)>=99 & as.numeric(baseinegi$EDA)<=  100]<-5
+detach(baseinegi)
+
+require(questionr)
+wtd.table(baseinegi$EDA.1)
+
+
+###método 2###
+attach(baseinegi)
+baseinegi$EDA.2 <- ifelse(as.numeric(EDA) >= 1 & as.numeric(EDA)<=15,1, ifelse(as.numeric(EDA) >= 16 & as.numeric(EDA)<=30,2,ifelse(as.numeric(EDA) >= 31 & as.numeric(EDA)<=60,3, ifelse(as.numeric(EDA) >= 61 & as.numeric(EDA)<=98,4,5))))
+detach(baseinegi)
+
+baseinegi$EDA.1<- ordered(baseinegi$EDA.1,levels = c("1","2","3", "4","5"),labels = c("NIÑOS", "JOVENES","ADULTOS", "ADULTOS MAYORES","NO ESPECIFICADO"))
+table(baseinegi$EDA.1)
+
+baseinegi$EDA.2<- ordered(baseinegi$EDA.2,levels = c("1","2","3", "4","5"),labels = c("NIÑOS", "JOVENES","ADULTOS", "ADULTOS MAYORES","NO ESPECIFICADO"))
+table(baseinegi$EDA.2)
